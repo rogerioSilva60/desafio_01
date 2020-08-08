@@ -17,9 +17,13 @@ import javax.persistence.Table;
 
 import br.com.desafio.empresa.entity.Empresas;
 import br.com.desafio.util.enums.Sexo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table
 public class Funcionarios {
@@ -55,4 +59,10 @@ public class Funcionarios {
 	@ManyToOne
 	@JoinColumn(name = "id_empresa", nullable = false) 
 	private Empresas empresa;
+
+	public Funcionarios(Long id) {
+		this.id = id;
+	}
+	
+	
 }
