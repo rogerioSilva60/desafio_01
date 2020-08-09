@@ -17,3 +17,17 @@ Para executar o projeto, é necessário utilizar o Spring Tools 4 for Eclipse, p
 Por fim, basta acessar a url: http://localhost:8080/swagger-ui.html#/ na máquina que esteja executando o projeto, Terá a documentacao da api pelo Swagger.
 
 ![swagger-desafio](https://user-images.githubusercontent.com/23174611/89718176-5d7b4100-d993-11ea-85de-b064bb806698.png)
+
+## Teste da documentação
+
+ Passos:
+ 
+  1. Cadastrar usuário
+ 
+  2. Cadastrar empresa
+ 
+  3. Cadastrar funcionário
+ 
+  4. Cadastar conta corrente empresa
+ 
+  5. Cadastrar conta corrente funcionário
