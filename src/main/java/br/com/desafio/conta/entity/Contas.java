@@ -10,9 +10,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import br.com.desafio.empresa.entity.Empresas;
 import br.com.desafio.util.exception.BusinessException;
 import lombok.Data;
 
@@ -39,7 +42,10 @@ public class Contas implements Serializable {
     
 	@Column(nullable = false)
     private Long numero;
-    
+	
+	@ManyToOne
+	@JoinColumn(name = "id_empresa", columnDefinition = "bigint null")
+	private Empresas empresa;    
     
     public void depositar(double valor) {
         this.saldo += valor;

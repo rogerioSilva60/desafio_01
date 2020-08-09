@@ -1,13 +1,16 @@
 package br.com.desafio.conta.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import br.com.desafio.conta.entity.ContaCorrenteFuncionario;
 import br.com.desafio.conta.repository.ContaCorrenteFuncionarioRepository;
 import br.com.desafio.conta.service.ContaCorrenteFuncionarioService;
+import br.com.desafio.empresa.entity.Empresas;
 import br.com.desafio.funcionario.entity.Funcionarios;
-import br.com.desafio.usuario.entity.Usuarios;
 import br.com.desafio.util.exception.BusinessException;
+import br.com.desafio.util.exception.NotFoundException;
 
 @Service
 public class ContaCorrenteFuncionarioServiceImpl implements ContaCorrenteFuncionarioService {
@@ -20,29 +23,29 @@ public class ContaCorrenteFuncionarioServiceImpl implements ContaCorrenteFuncion
 	
 	@Override
 	public ContaCorrenteFuncionario salvar(ContaCorrenteFuncionario contaCorrente) {
-		validar(contaCorrente.getFuncionario());
+		validar(contaCorrente.getFuncionario(), contaCorrente.getEmpresa());
 		ContaCorrenteFuncionario contaCorrenteSalva = repository.save(contaCorrente);
 		return contaCorrenteSalva;
 	}
 	
-	public void validar(Funcionarios funcionario) {
-		boolean existe = repository.existsByFuncionario(funcionario);
+	public void validar(Funcionarios funcionario, Empresas empresa) {
+		boolean existe = repository.existsByFuncionarioAndEmpresa(funcionario, empresa);
 		if(existe) {
 			throw new BusinessException("Funcionario existente");
 		}
 	}
 
 	@Override
-	public ContaCorrenteFuncionario buscar(Funcionarios funcionario) {
-		ContaCorrenteFuncionario contaCorrente = repository.findByFuncionario(funcionario)
-			.orElseThrow(() -> new BusinessException("Conta corrente do funcionario não encontrada"));
+	public ContaCorrenteFuncionario buscar(Empresas empresa, Funcionarios funcionario) {
+		ContaCorrenteFuncionario contaCorrente = repository.findByEmpresaAndFuncionario(empresa, funcionario)
+			.orElseThrow(() -> new NotFoundException("Conta corrente do funcionario não encontrada"));
 		return contaCorrente;
 	}
 
 	@Override
 	public ContaCorrenteFuncionario buscar(Long agenciaFavorecido, Long numeroFavorecido) {
 		ContaCorrenteFuncionario contaFuncionario = repository.findByAgenciaAndNumero(agenciaFavorecido, numeroFavorecido)
-			.orElseThrow(() -> new BusinessException("Conta corrente do funcionario não encontrada"));
+			.orElseThrow(() -> new NotFoundException("Conta corrente do funcionario não encontrada"));
 		return contaFuncionario;
 	}
 
@@ -53,6 +56,12 @@ public class ContaCorrenteFuncionarioServiceImpl implements ContaCorrenteFuncion
 		}
 		ContaCorrenteFuncionario funcionarioAtualizado = repository.save(contaFuncionario);
 		return funcionarioAtualizado;
+	}
+
+	@Override
+	public List<ContaCorrenteFuncionario> buscar(Empresas empresa) {
+		List<ContaCorrenteFuncionario> lista = repository.findByEmpresa(empresa);
+		return lista;
 	}
 	
 	
