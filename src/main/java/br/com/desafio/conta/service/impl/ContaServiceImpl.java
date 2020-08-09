@@ -40,13 +40,26 @@ public class ContaServiceImpl implements ContaService{
 			.orElseThrow(() -> new NotFoundException("Conta corrente da empresa não encontrada"));
 		return contas;
 	}
-
+	
 	@Override
-	public List<Contas> buscar(Empresas empresa) {
-		List<Contas> lista = repository.findByEmpresaNotFuncionarios(empresa.getId());
-		return lista;
+	public Contas buscar(Empresas empresa) {
+		Contas conta = repository.findByEmpresa(empresa)
+			.orElseThrow(() -> new NotFoundException("Conta corrente da empresa não encontrada"));
+		return conta;
 	}
 
+	@Override
+	public List<Contas> buscarSemFuncionarios(Empresas empresa) {
+		List<Contas> conta = repository.findByEmpresaNotFuncionarios(empresa);
+		return conta;
+	}
+
+	@Override
+	public List<Contas> buscarSemFuncionarios(List<Empresas> empresas) {
+		List<Contas> lista = repository.findByEmpresaInNotFuncionarios(empresas);
+		return lista;
+	}
+	
 	@Override
 	public Contas buscar(Long agenciaOrigem, Long numeroOrigem) {
 		Contas contaEmpresa = repository.findByAgenciaAndNumero(agenciaOrigem, numeroOrigem)
@@ -62,4 +75,5 @@ public class ContaServiceImpl implements ContaService{
 		Contas contaAtualizada = repository.save(contaEmpresa);
 		return contaAtualizada;
 	}
+	
 }

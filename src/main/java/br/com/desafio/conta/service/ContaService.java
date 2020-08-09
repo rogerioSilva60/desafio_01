@@ -13,9 +13,13 @@ public interface ContaService {
 	
 	Contas buscar(Empresas empresa, Long id);
 	
-	List<Contas> buscar(Empresas empresa);
+	List<Contas> buscarSemFuncionarios(List<Empresas> empresas);
+
+	List<Contas> buscarSemFuncionarios(Empresas empresa);
 	
 	Contas buscar(Long agenciaOrigem, Long numeroOrigem);
 	
 	Contas atualizar(Contas contaEmpresa);
+	
+	Contas buscar(Empresas empresas);
 }

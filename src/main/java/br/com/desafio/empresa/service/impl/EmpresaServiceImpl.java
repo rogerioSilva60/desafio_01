@@ -1,5 +1,7 @@
 package br.com.desafio.empresa.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import br.com.desafio.empresa.entity.Empresas;
@@ -38,6 +40,12 @@ public class EmpresaServiceImpl implements EmpresaService {
 		Empresas empresa = repository.findByIdAndUsuario(id, new Usuarios(idUsuario))
 			.orElseThrow(() -> new NotFoundException("Empresa nao encontrada"));
 		return empresa;
+	}
+
+	@Override
+	public List<Empresas> buscar(Usuarios usuario) {
+		List<Empresas> findByUsuario = repository.findByUsuario(usuario);
+		return findByUsuario;
 	}
 	
 }

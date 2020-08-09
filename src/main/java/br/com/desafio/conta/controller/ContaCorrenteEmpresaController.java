@@ -27,21 +27,26 @@ import br.com.desafio.conta.entity.Contas;
 import br.com.desafio.conta.service.ContaCorrenteFuncionarioService;
 import br.com.desafio.conta.service.ContaService;
 import br.com.desafio.empresa.entity.Empresas;
+import br.com.desafio.empresa.service.EmpresaService;
+import br.com.desafio.usuario.entity.Usuarios;
+import br.com.desafio.util.UtilController;
 import br.com.desafio.util.response.Response;
 
 @RestController
 @RequestMapping("api/v1/conta/corrente/empresa")
-public class ContaCorrenteEmpresaController {
+public class ContaCorrenteEmpresaController extends UtilController {
 
 	private ModelMapper modelMapper;
 	private ContaService service;
 	private ContaCorrenteFuncionarioService contaCorrenteFuncionarioService;
+	private EmpresaService empresaService;
 
 	public ContaCorrenteEmpresaController(ContaService service, ModelMapper modelMapper,
-			ContaCorrenteFuncionarioService contaCorrenteFuncionarioService) {
+			ContaCorrenteFuncionarioService contaCorrenteFuncionarioService, EmpresaService empresaService) {
 		this.service = service;
 		this.modelMapper = modelMapper;
 		this.contaCorrenteFuncionarioService = contaCorrenteFuncionarioService;
+		this.empresaService = empresaService;
 	}
 
 	@PostMapping
@@ -57,14 +62,15 @@ public class ContaCorrenteEmpresaController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@GetMapping("{idEmpresa}/{id}")
+	@GetMapping
 	@PreAuthorize("hasAnyRole('ADM')")
-	public ResponseEntity<Response<ContaDto>> buscar(@PathVariable Long idEmpresa,
-			@PathVariable Long id) {
-		Response<ContaDto> response = new Response<>();
-		Contas contaCorrente = service.buscar(new Empresas(idEmpresa), id);
-		ContaDto contaCorrenteDto = modelMapper.map(contaCorrente, ContaDto.class);
-		response.setData(contaCorrenteDto);
+	public ResponseEntity<Response<List<ContaDto>>> buscar() {
+		Response<List<ContaDto>> response = new Response<>();
+		List<Empresas> empresas = empresaService.buscar(new Usuarios(getIdUser()));
+		List<Contas> lista = service.buscarSemFuncionarios(empresas);
+		List<ContaDto> listaDto = lista.stream().map(conta -> modelMapper.map(conta, ContaDto.class))
+				.collect(Collectors.toList());
+		response.setData(listaDto);
 		return ResponseEntity.ok(response);
 	}
 
@@ -72,9 +78,9 @@ public class ContaCorrenteEmpresaController {
 	@PreAuthorize("hasAnyRole('ADM')")
 	public ResponseEntity<Response<List<ContaDto>>> buscar(@PathVariable Long idEmpresa) {
 		Response<List<ContaDto>> response = new Response<>();
-		List<Contas> lista = service.buscar(new Empresas(idEmpresa));
-		List<ContaDto> listaDto = lista.stream()
-				.map(conta -> modelMapper.map(conta, ContaCorrenteEmpresaDto.class)).collect(Collectors.toList());
+		List<Contas> lista = service.buscarSemFuncionarios(new Empresas(idEmpresa));
+		List<ContaDto> listaDto = lista.stream().map(conta -> modelMapper.map(conta, ContaDto.class))
+				.collect(Collectors.toList());
 		response.setData(listaDto);
 		return ResponseEntity.ok(response);
 	}
@@ -84,8 +90,8 @@ public class ContaCorrenteEmpresaController {
 	public ResponseEntity<Response<ContaDto>> transferenciaFuncionario(@RequestBody @Valid ContaPagamentoDto dto) {
 		Response<ContaDto> response = new Response<>();
 		Contas contaEmpresa = service.buscar(dto.getOrigem().getAgencia(), dto.getOrigem().getNumero());
-		ContaCorrenteFuncionario contaFuncionario = contaCorrenteFuncionarioService.buscar(dto.getFavorecido().getAgencia(),
-				dto.getFavorecido().getNumero());
+		ContaCorrenteFuncionario contaFuncionario = contaCorrenteFuncionarioService
+				.buscar(dto.getFavorecido().getAgencia(), dto.getFavorecido().getNumero());
 		contaEmpresa.transferir(dto.getValor(), contaFuncionario);
 		Contas contaEmpresaAtualizada = service.atualizar(contaEmpresa);
 		contaCorrenteFuncionarioService.atualizar(contaFuncionario);
@@ -93,7 +99,7 @@ public class ContaCorrenteEmpresaController {
 		response.setData(contaEmpresaDto);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@PatchMapping("depositar")
 	@PreAuthorize("hasAnyRole('ADM')")
 	public ResponseEntity<Response<ContaDto>> depositar(@RequestBody @Valid ContaDepositoDto dto) {

@@ -15,9 +15,15 @@ public interface ContaRepository extends JpaRepository<Contas, Long>{
 
 	Optional<Contas> findByEmpresaAndId(Empresas empresa, Long id);
 
-	@Query(value = "select * from contas c where c.id_empresa= ?1 and "
-			+ "c.id not in (select id_conta_corrente from conta_corrente_funcionarios)", nativeQuery = true)
-	List<Contas> findByEmpresaNotFuncionarios(Long idEmpresa);
-
 	Optional<Contas> findByAgenciaAndNumero(Long agenciaOrigem, Long numeroOrigem);
+
+	@Query(value = "select * from contas c where c.id_empresa in (?1) and "
+			+ "c.id not in (select id_conta_corrente from conta_corrente_funcionarios)", nativeQuery = true)
+	List<Contas> findByEmpresaInNotFuncionarios(List<Empresas> empresas);
+	
+	@Query(value = "select * from contas c where c.id_empresa = ?1 and "
+			+ "c.id not in (select id_conta_corrente from conta_corrente_funcionarios)", nativeQuery = true)
+	List<Contas> findByEmpresaNotFuncionarios(Empresas empresa);
+
+	Optional<Contas> findByEmpresa(Empresas empresa);
 }
