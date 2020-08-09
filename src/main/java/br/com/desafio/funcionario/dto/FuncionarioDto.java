@@ -6,7 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import br.com.desafio.util.enums.Sexo;
+import br.com.desafio.util.enums.Genero;
 import lombok.Data;
 
 @Data
@@ -19,8 +19,8 @@ public class FuncionarioDto {
 	@NotEmpty(message = "Obrigatório cpf")
 	private String cpf;
 	private Date nascimento;
-	@NotNull(message = "Obrigatório sexo")
-	private Sexo sexo;
+	@NotNull(message = "Obrigatório genero")
+	private Genero genero;
 	
 	@Valid
 	@NotNull(message = "Obrigatório empresa")

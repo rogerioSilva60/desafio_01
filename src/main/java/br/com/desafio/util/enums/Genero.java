@@ -5,12 +5,12 @@ import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Sexo {
+public enum Genero {
 
 	MASCULINO("Masculino"), FEMININO("Feminino");
 	
 	private String valor;
-	Sexo(String valor){
+	Genero(String valor){
 		this.valor = valor;
 	}
 
@@ -20,16 +20,16 @@ public enum Sexo {
 	}
 	
 	@JsonCreator
-    public static Sexo converterValor(String valor) {
+    public static Genero converterValor(String valor) {
         if(valor != null){
-            for (Sexo sexo : values()) {
-                if (sexo.valor.equalsIgnoreCase(valor)) {
-                    return sexo;
+            for (Genero genero : values()) {
+                if (genero.valor.equalsIgnoreCase(valor)) {
+                    return genero;
                 }
             }
         }
         throw new IllegalArgumentException(
-                "Tipo de enumeração desconhecido '" + valor + "', Os valores permitidos para 'Sexo' são " + Arrays.toString(values()));
+                "Tipo de enumeração desconhecido '" + valor + "', Os valores permitidos para 'Genero' são " + Arrays.toString(values()));
     }
 
     @Override

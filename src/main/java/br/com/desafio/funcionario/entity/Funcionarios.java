@@ -16,7 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import br.com.desafio.empresa.entity.Empresas;
-import br.com.desafio.util.enums.Sexo;
+import br.com.desafio.util.enums.Genero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,7 +48,7 @@ public class Funcionarios {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Sexo sexo;
+	private Genero genero;
 	
 	@Column(columnDefinition = "boolean default true")
 	private Boolean ativo = true;
