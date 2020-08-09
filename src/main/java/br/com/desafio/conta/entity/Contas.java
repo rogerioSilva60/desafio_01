@@ -65,7 +65,7 @@ public class Contas implements Serializable {
             this.saldo -= valor;
             destino.depositar(valor);
         } else {
-        	throw new BusinessException("Não foi possível transferir, pois o valor origem esta abaixo que o valor informado");
+        	throw new BusinessException("Não foi possível transferir, pois o saldo origem esta abaixo que o valor informado");
         }
     }
 }
